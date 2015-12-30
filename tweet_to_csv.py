@@ -11,6 +11,8 @@ def main(argv):
 	input_file = None
 	output_file = None
 	token = False
+	text = None
+	processed_text = None
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:",['help', "input=","output="])
 		if not opts:
@@ -35,8 +37,8 @@ def main(argv):
 			usage()
 			sys.exit(2)
 
-	print 'Input file is ', input_file
-   	print 'Output file is ', output_file
+	# print 'Input file is ', input_file
+   	# print 'Output file is ', output_file
 	in_file = open(input_file, 'r')
 	out_file = open(output_file, 'w')
 	f = csv.writer(out_file)
@@ -53,11 +55,12 @@ def main(argv):
 		tweet = json.loads(line)
 
 		#Get tweet text, and tokenize
-		text = tweet.get('text').encode('unicode_escape')
-		if token:
-			processed_text = TweetTokenizer().tokenize(text)
-		else:
-			processed_text = text
+		if tweet.get('text'):
+			text = tweet.get('text').encode('unicode_escape')
+			if token:
+				processed_text = TweetTokenizer().tokenize(text)
+			else:
+				processed_text = text
 		#print(processed_tweet)
 
 		#Get favorite and retweet count
