@@ -5,6 +5,7 @@
 # 
 # It will produce the list of tweets for the query "apple" 
 # in the file data/stream_apple.json
+# Code modified from http://marcobonzanini.com/2015/03/02/mining-twitter-data-with-python-part-1/ 
 
 import tweepy
 from tweepy import Stream
