@@ -2,6 +2,7 @@ import json
 from nltk.tokenize import TweetTokenizer
 import csv
 import sys
+import argparse
 import getopt
 
 def usage():
@@ -18,59 +19,51 @@ def get_hashtags(tweet):
 		tmp_list.append(tag.get("text"))
 	return tmp_list
 
-def main(argv):
-	input_file = None
-	output_file = None
-	token = False
+def get_parser():
+
+	parser = argparse.ArgumentParser(description="Storge data from JSON Tweet to .csv")
+	parser.add_argument('-i',
+						'--input',
+						dest="input_file",
+						help="Input file")
+	parser.add_argument('-o',
+						'--output',
+						dest="output_file",
+						help="Output file")	
+	parser.add_argument('-t',
+						'--tokenize',
+						dest="token",
+						default=False,
+						action="store_true",
+						help="Tokenize tweet text")
+	parser.add_argument('-l',
+						'--links',
+						dest="links",
+						default=False,
+						action="store_true",
+						help="Store tweets with links/media")
+	return parser
+
+def main(args):
 	text = None
 	processed_text = None
-	links = False
-	try:
-		opts, args = getopt.getopt(argv,"hi:o:",['help', "input=","output="])
-		if not opts:
-			print 'No options suppled'
-			usage()
-			sys.exit(2)
-	except getopt.GetoptError:
-		print 'Here'
-		usage()
-		sys.exit(2)
-	for opt, arg in opts:
-		if opt == "-h":
-			usage()
-			sys.exit()
-		elif opt in ("-i", "--input"):
-			input_file = arg
-		elif opt in ("-o", "--output"):		
-			output_file = arg
-		elif opt in ("-t", "--tokenize"):
-			token = True
-		elif opt in ("-l" "--links"):
-			links = True
-		else:
-			usage()
-			sys.exit(2)
 
-	# print 'Input file is ', input_file
-   	# print 'Output file is ', output_file
-	in_file = open(input_file, 'r')
-	out_file = open(output_file, 'w')
+	in_file = open(args.input_file, 'r')
+	out_file = open(args.output_file, 'w')
 	f = csv.writer(out_file)
+
 	#Write headers for .csv
-
-
-	#fields = ['Text', 'hashtags', 'favorite_count', 'retweet_count']
 	fields = ['Text', 'hashtags']
 	f.writerow(fields)
 
-	#loop for lines in .json (assuming get line is a tweet)
+	#loop for lines in .json (assuming each line is a tweet)
 	for line in in_file:
 		tweet = json.loads(line)
 
 		#Get tweet text, and tokenize
 		if tweet.get('text'):
 			text = tweet.get('text').encode('unicode_escape')
-			if token:
+			if args.token:
 				processed_text = TweetTokenizer().tokenize(text)
 			else:
 				processed_text = text
@@ -87,9 +80,8 @@ def main(argv):
 			#HASHTAGS
 			hashtag_list = get_hashtags(tweet)
 
-			if not links:
-				if entities.get("urls") == [] or not entities.get("media"): #if no urls
-					# if not entities.get("media"): #if no media entity
+			if not args.links:
+				if entities.get("urls") == [] or not entities.get("media"): #if no urls or media
 					f.writerow([processed_text, hashtag_list])
 			else:
 				f.writerow([processed_text, hashtag_list])
@@ -99,4 +91,6 @@ def main(argv):
 	in_file.close()
 
 if __name__ == "__main__":
-	main(sys.argv[1:])
+	parser = get_parser()
+	args = parser.parse_args()
+	main(args)
