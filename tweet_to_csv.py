@@ -5,7 +5,18 @@ import sys
 import getopt
 
 def usage():
-	print 'tweet_to_csv.py -i <input_file> -o <output_file>'
+	print 'tweet_to_csv.py [OPTIONS] -i <input_file> -o <output_file>'
+
+#Given a tweet, get_hashtags will return a list of the hashtags (text).
+#If there are no hashtags, it will return False
+def get_hashtags(tweet):
+	tmp_list = []
+	hashtag_json_list = tweet.get("entities").get('hashtags') #get a list of the hashtags (in json format)
+	if hashtag_json_list == []:
+		return False
+	for tag in hashtag_json_list:
+		tmp_list.append(tag.get("text"))
+	return tmp_list
 
 def main(argv):
 	input_file = None
@@ -13,6 +24,7 @@ def main(argv):
 	token = False
 	text = None
 	processed_text = None
+	links = False
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:",['help', "input=","output="])
 		if not opts:
@@ -33,6 +45,8 @@ def main(argv):
 			output_file = arg
 		elif opt in ("-t", "--tokenize"):
 			token = True
+		elif opt in ("-l" "--links"):
+			links = True
 		else:
 			usage()
 			sys.exit(2)
@@ -46,12 +60,11 @@ def main(argv):
 
 
 	#fields = ['Text', 'hashtags', 'favorite_count', 'retweet_count']
-	fields = ['Text']
+	fields = ['Text', 'hashtags']
 	f.writerow(fields)
 
 	#loop for lines in .json (assuming get line is a tweet)
 	for line in in_file:
-		#line = in_file.readline()
 		tweet = json.loads(line)
 
 		#Get tweet text, and tokenize
@@ -64,16 +77,22 @@ def main(argv):
 		#print(processed_tweet)
 
 		#Get favorite and retweet count
-		fav_count = tweet.get('favorite_count')
-		retweet_count = tweet.get('retweet_count')
+		# fav_count = tweet.get('favorite_count')
+		# retweet_count = tweet.get('retweet_count')
 
-		#Get hastags
-		hastags = tweet.get('hastags')
-		if not hastags:
-			hastags = False
 		#Write data to csv
-		#f.writerow([processed_text,hastags,fav_count,retweet_count])
-		f.writerow([processed_text])
+		entities = tweet.get("entities")
+		if entities: #if entities != None
+
+			#HASHTAGS
+			hashtag_list = get_hashtags(tweet)
+
+			if not links:
+				if entities.get("urls") == [] or not entities.get("media"): #if no urls
+					# if not entities.get("media"): #if no media entity
+					f.writerow([processed_text, hashtag_list])
+			else:
+				f.writerow([processed_text, hashtag_list])
 
 	#Close files when done
 	out_file.close()
