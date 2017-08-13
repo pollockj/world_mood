@@ -13,7 +13,7 @@ def readRaw(file):
          return f.read()
 
 
-def extract_features(raw_data,non_features,N,verbose=False):
+def extract_features(raw_data,non_features,additional_features,N,verbose=False):
     words = TweetTokenizer().tokenize(raw_data)
     words = [w.lower() for w in words]
     words = [w for w in words if w not in non_features]
@@ -21,7 +21,7 @@ def extract_features(raw_data,non_features,N,verbose=False):
     if verbose:
         for word, frequency in fdist.most_common(N):
             print(u'{}  {}'.format(word, frequency))
-    return list(fdist)[:N]
+    return set(list(fdist)[:N] + additional_features)
 
 # if __name__ == "__main__":
 #     file = "./twitter_data/tweets.txt"

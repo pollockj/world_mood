@@ -10,7 +10,7 @@ def loadSet(file, includeEmotions):
         for line in reader:
             if line["Emotion"] in includeEmotions:
                 text = TweetTokenizer().tokenize(line["Text"].lower())
-                text = addBigrams(text)
+                # text = addBigrams(text)
                 data.append((text,line["Emotion"]))
 
         return data
