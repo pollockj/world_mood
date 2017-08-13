@@ -23,9 +23,9 @@ def extract_features(raw_data,non_features,N,verbose=False):
             print(u'{}  {}'.format(word, frequency))
     return list(fdist)[:N]
 
-if __name__ == "__main__":
-    file = "./twitter_data/tweets.txt"
-    raw = readRaw(file)
-    non_features = ['rt', '@']
-    extract_features(raw,non_features,50,False)
+# if __name__ == "__main__":
+#     file = "./twitter_data/tweets.txt"
+#     raw = readRaw(file)
+#     non_features = ['rt', '@']
+#     extract_features(raw,non_features,50,False)
 
