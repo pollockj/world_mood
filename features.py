@@ -21,9 +21,46 @@ def extract_features(raw_data,non_features,additional_features,N,verbose=False):
     if verbose:
         for word, frequency in fdist.most_common(N):
             print(u'{}  {}'.format(word, frequency))
-    return set(list(fdist)[:N] + additional_features)
+    return list(set(list(fdist)[:N] + additional_features))
+
+def emoji_features():
+    e = []
+    c = 128512
+    ##Face Emojis
+    for i in range(79):
+        # print(chr(c))
+        e.append(chr(c))
+        c += 1
+
+    #Transportation Emojis
+    c = 128639
+    for i in range(70):
+        # print(chr(c))
+        e.append((chr(c)))
+        c += 1
+
+    #Punctuation Emoji
+    c = 10067
+    e.append(chr(c))
+    e.append(chr(c+1))
+    e.append(chr(c+2))
+    e.append(chr(c+4))
+
+    #Love Emoji
+    c = 128139
+    for i in range(21):
+        # print(chr(c))
+        e.append(chr(c))
+        c += 1
+
+    return e
+
+# def hashtag_features(raw_data):
+
 
 # if __name__ == "__main__":
+#     e = emoji_features()
+#     print(e)
 #     file = "./twitter_data/tweets.txt"
 #     raw = readRaw(file)
 #     non_features = ['rt', '@']

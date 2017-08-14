@@ -5,17 +5,22 @@ import nltk
 
 setFile = "./data/compressed.csv"
 
-includeEmotions = ["Happy", "Anger/Upset"]
+includeEmotions = ["Love", "Anger/Upset"]
 tokensAndLabels = loadSet(setFile,includeEmotions)
 
-##Extract features
+##Extract Most Frequent Word Features
 numberWords = 1000
 featureFile = "./twitter_data/tweets.txt"
 non_features= ['@','rt']
 addtional_features = ['evil','murder','trump','pro-trump']
-# non_features = []
-word_features = extract_features(readRaw(featureFile),non_features,addtional_features, numberWords)
+word = extract_features(readRaw(featureFile),non_features,addtional_features, numberWords)
 
+
+##Generate Emoji Features
+emoji = emoji_features()
+
+##Combine Features
+f = emoji + word
 #Apply features
 length = len(tokensAndLabels)
 nintyPercent = int(length*.9)
@@ -23,8 +28,8 @@ nintyPercent = int(length*.9)
 train_tokens = tokensAndLabels[:nintyPercent]
 test_tokens = tokensAndLabels[nintyPercent:]
 
-trainSet = [(document_features(tweet,word_features),emotion) for (tweet,emotion) in train_tokens]
-testSet = [(document_features(tweet,word_features),emotion) for (tweet,emotion) in test_tokens]
+trainSet = [(document_features(tweet,f),emotion) for (tweet,emotion) in train_tokens]
+testSet = [(document_features(tweet,f),emotion) for (tweet,emotion) in test_tokens]
 
 #Create Train/Test Set
 
@@ -46,7 +51,7 @@ print('Train set accuracy = {:<2}'.format(nltk.classify.accuracy(classifier, tra
 
 errors = []
 for (tweet, emotion) in test_tokens:
-    guess = classifier.classify(document_features(tweet,word_features))
+    guess = classifier.classify(document_features(tweet,f))
     if guess != emotion:
         errors.append( (tweet, guess, emotion))
 for (tweet, guess, emotion) in errors:
