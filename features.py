@@ -30,45 +30,4 @@ def emoji_features():
 
 def punctuation_features():
     return ['!','?']
-    # print(emoji.face_positive + emoji.face_negative)
-    # print(emoji.emotion)
-    # print(emoji.)
-# def emoji_features():
-#     e = []
-#     c = 128512
-#     ##Face Emojis
-#     for i in range(79):
-#         # print(chr(c))
-#         e.append(chr(c))
-#         c += 1
-#
-#     #Transportation Emojis
-#     c = 128639
-#     for i in range(70):
-#         # print(chr(c))
-#         e.append((chr(c)))
-#         c += 1
-#
-#     #Punctuation Emoji
-#     c = 10067
-#     e.append(chr(c))
-#     e.append(chr(c+1))
-#     e.append(chr(c+2))
-#     e.append(chr(c+4))
-#
-#     #Love Emoji
-#     c = 128139
-#     for i in range(21):
-#         # print(chr(c))
-#         e.append(chr(c))
-#         c += 1
-#
-#     return e
-
-# def hashtag_features(raw_data):
-
-
-if __name__ == "__main__":
-    emoji_features()
-
 
