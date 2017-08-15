@@ -5,22 +5,26 @@ import nltk
 
 setFile = "./data/compressed.csv"
 
-includeEmotions = ["Love", "Anger/Upset"]
+includeEmotions = ["Happy", "Anger/Upset"]
 tokensAndLabels = loadSet(setFile,includeEmotions)
 
 ##Extract Most Frequent Word Features
 numberWords = 1000
 featureFile = "./twitter_data/tweets.txt"
-non_features= ['@','rt']
+non_features= ['@','rt','...']
 addtional_features = ['evil','murder','trump','pro-trump']
-word = extract_features(readRaw(featureFile),non_features,addtional_features, numberWords)
+word = word_features(readRaw(featureFile),non_features,addtional_features, numberWords)
 
 
-##Generate Emoji Features
+##Get Emoji Features
 emoji = emoji_features()
 
+##Get Punctuation Features
+punc = punctuation_features()
+
 ##Combine Features
-f = emoji + word
+f = emoji + word + punc
+
 #Apply features
 length = len(tokensAndLabels)
 nintyPercent = int(length*.9)
