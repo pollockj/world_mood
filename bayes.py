@@ -1,11 +1,14 @@
 from load_set import loadSet
 from features import *
+from nltk.corpus import words as wds
 import nltk
+
+#Use "subjectivity" corpus?
 
 
 setFile = "./data/compressed.csv"
 
-includeEmotions = ["Happy", "Anger/Upset"]
+includeEmotions = ["Happy", "Sadness"]
 tokensAndLabels = loadSet(setFile,includeEmotions)
 
 ##Extract Most Frequent Word Features
@@ -13,8 +16,7 @@ numberWords = 1000
 featureFile = "./twitter_data/tweets.txt"
 non_features= ['@','rt','...']
 addtional_features = ['evil','murder','trump','pro-trump']
-word = word_features(readRaw(featureFile),non_features,addtional_features, numberWords)
-
+word = word_features(readRaw(featureFile),numberWords, non_features,addtional_features)
 
 ##Get Emoji Features
 emoji = emoji_features()
@@ -22,8 +24,11 @@ emoji = emoji_features()
 ##Get Punctuation Features
 punc = punctuation_features()
 
+##Get Common Word Features
+common = wds.words(fileids='en-basic')
+
 ##Combine Features
-f = emoji + word + punc
+f = list(set(emoji + word + punc + common))
 
 #Apply features
 length = len(tokensAndLabels)
